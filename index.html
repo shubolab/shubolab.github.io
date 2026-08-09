@@ -3,80 +3,107 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Shubo 的个人主页，关注 LLM 应用开发与网络安全。" />
-    <meta name="theme-color" content="#111310" />
-    <title>Shubo — About</title>
-    <link rel="stylesheet" href="styles.css" />
+    <meta name="description" content="Shubo 的个人博客：LLM 应用开发、网络安全和一些真实的折腾记录。" />
+    <meta name="theme-color" content="#080b09" />
+    <title>shubo@lab:~</title>
+    <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
-    <div class="shell">
-      <header class="site-header">
-        <a class="wordmark" href="/">SHUBO<span class="accent">.</span></a>
-        <nav aria-label="主导航">
-          <a class="active" href="/">About</a>
-          <a href="#writing">Writing</a>
-          <a href="https://github.com/shubolab" target="_blank" rel="noreferrer">GitHub ↗</a>
-        </nav>
+    <main class="terminal-window">
+      <header class="terminal-bar">
+        <div class="window-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="terminal-title">shubo@lab: ~</div>
+        <div class="terminal-state"><span></span> online</div>
       </header>
 
-      <main>
-        <section class="about-hero" aria-labelledby="about-title">
-          <div class="section-code">ABOUT / 001</div>
-          <div class="hero-main">
-            <h1 id="about-title">Hi, I'm<br />Shubo<span class="accent">.</span></h1>
-            <p class="hero-lead">目前专注于<br />LLM 应用开发与网络安全。</p>
-            <p class="hero-lead en">Currently working on LLM application development and cybersecurity.</p>
-          </div>
+      <div class="terminal-screen">
+        <nav class="command-nav" aria-label="主导航">
+          <span class="prompt">shubo@lab:~$</span>
+          <a href="#about">cat about.md</a>
+          <a href="#github-profile">gh profile</a>
+          <a href="#posts">ls posts/</a>
+          <a href="#contact">cat contact.txt</a>
+          <a href="https://github.com/shubolab" target="_blank" rel="noreferrer">git remote -v ↗</a>
+        </nav>
 
-          <aside class="profile-facts" aria-label="个人信息">
-            <div class="fact-row">
-              <span>FOCUS / 01</span>
-              <strong>LLM Application Development</strong>
-            </div>
-            <div class="fact-row">
-              <span>FOCUS / 02</span>
-              <strong>Cybersecurity</strong>
-            </div>
-            <div class="fact-row">
-              <span>LANGUAGES</span>
-              <strong>Python · Go</strong>
-            </div>
-          </aside>
-        </section>
-
-        <section class="writing" id="writing" aria-labelledby="writing-title">
-          <div class="section-head">
+        <section class="terminal-section intro" id="about" aria-labelledby="about-title">
+          <div class="command-line"><span class="prompt">shubo@lab:~$</span> cat about.md</div>
+          <div class="command-output intro-grid">
             <div>
-              <span class="section-code">WRITING / 001</span>
-              <h2 id="writing-title">最近写的</h2>
+              <p class="comment"># about</p>
+              <h1 id="about-title">Hi, I'm Shubo<span class="cursor" aria-hidden="true"></span></h1>
+              <p class="lead">目前主要做 LLM 应用开发和网络安全。这里放项目记录、踩坑复盘，以及偶尔能派上用场的命令。</p>
             </div>
-            <span class="count">1 ARTICLE</span>
-          </div>
-
-          <a class="post-row" href="/posts/qq-pet-codex/">
-            <time datetime="2026-08-09">2026.08.09</time>
-            <div>
-              <h3>QQ 宠物赛博复活：这次它不吃元宝，只吃算力</h3>
-              <p>一只企鹅、一张图集、一个安装 Skill，以及一套认真得有点好笑的 QA。</p>
-            </div>
-            <span class="post-arrow" aria-hidden="true">↗</span>
-          </a>
-        </section>
-
-        <section class="contact" aria-labelledby="contact-title">
-          <span class="section-code">CONTACT</span>
-          <h2 id="contact-title">找到我</h2>
-          <div class="contact-list">
-            <a href="mailto:wsb814183583@gmail.com"><span>Email</span><strong>wsb814183583@gmail.com</strong><b>↗</b></a>
-            <div><span>WeChat</span><strong>i814183583</strong></div>
+            <dl class="profile-table">
+              <div><dt>focus.01</dt><dd>LLM application development</dd></div>
+              <div><dt>focus.02</dt><dd>Cybersecurity</dd></div>
+              <div><dt>languages</dt><dd>Python / Go</dd></div>
+              <div><dt>location</dt><dd>China</dd></div>
+            </dl>
           </div>
         </section>
-      </main>
 
-      <footer class="site-footer">
-        <span>© 2026 SHUBO</span>
-        <span>LLM / SECURITY / CODE</span>
+        <section class="terminal-section profile-repo" id="github-profile" aria-labelledby="profile-title">
+          <div class="command-line"><span class="prompt">shubo@lab:~$</span> gh repo view shubolab/shubolab --readme</div>
+          <div class="command-output">
+            <div class="repo-heading">
+              <div>
+                <span class="repo-visibility">PUBLIC</span>
+                <h2 id="profile-title">shubolab/shubolab</h2>
+                <p>About 页面的资料来源。简介有变化时，以这个仓库为准。</p>
+              </div>
+              <a href="https://github.com/shubolab/shubolab" target="_blank" rel="noreferrer">view repository ↗</a>
+            </div>
+            <img class="profile-card" src="https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=shubolab&amp;theme=github_dark" alt="Shubo 的 GitHub Profile Summary" loading="lazy" />
+          </div>
+        </section>
+
+        <section class="terminal-section" id="posts" aria-labelledby="posts-title">
+          <div class="command-line"><span class="prompt">shubo@lab:~$</span> ls -lt posts/</div>
+          <div class="command-output">
+            <div class="listing-head" aria-hidden="true"><span>DATE</span><span>NAME</span><span>DESCRIPTION</span></div>
+            <h2 class="sr-only" id="posts-title">文章</h2>
+            <a class="file-row" href="/posts/ssh-alias-codex-routing/">
+              <time datetime="2026-08-09">2026-08-09</time>
+              <strong><span class="file-icon">~/</span>ssh-alias-codex-routing.md</strong>
+              <p>别再背 IP：管好多台机器，也让 Codex 别跑错片场</p>
+              <b>↗</b>
+            </a>
+            <a class="file-row" href="/posts/qq-pet-codex/">
+              <time datetime="2026-08-09">2026-08-09</time>
+              <strong><span class="file-icon">~/</span>qq-pet-codex.md</strong>
+              <p>QQ 宠物赛博复活：这次它不吃元宝</p>
+              <b>↗</b>
+            </a>
+            <div class="listing-summary">total 2 posts</div>
+          </div>
+        </section>
+
+        <section class="terminal-section" id="contact" aria-labelledby="contact-title">
+          <div class="command-line"><span class="prompt">shubo@lab:~$</span> cat contact.txt</div>
+          <div class="command-output contact-output">
+            <h2 class="sr-only" id="contact-title">联系方式</h2>
+            <p><span>EMAIL</span><a href="mailto:wsb814183583@gmail.com">wsb814183583@gmail.com</a></p>
+            <p><span>WECHAT</span><strong>i814183583</strong></p>
+            <p><span>GITHUB</span><a href="https://github.com/shubolab" target="_blank" rel="noreferrer">github.com/shubolab ↗</a></p>
+          </div>
+        </section>
+
+        <section class="interactive-terminal" aria-label="可交互终端">
+          <div id="cli-output" class="cli-output" aria-live="polite">
+            <p>Type <strong>help</strong> to see available commands.</p>
+          </div>
+          <form id="cli-form" autocomplete="off">
+            <label class="prompt" for="cli-input">visitor@shubolab:~$</label>
+            <input id="cli-input" name="command" spellcheck="false" aria-label="输入终端命令" autofocus />
+          </form>
+        </section>
+      </div>
+
+      <footer class="terminal-footer">
+        <span>UTF-8</span><span>2 posts</span><span>main*</span><span>© 2026 SHUBO</span>
       </footer>
-    </div>
+    </main>
+    <script src="/script.js"></script>
   </body>
 </html>

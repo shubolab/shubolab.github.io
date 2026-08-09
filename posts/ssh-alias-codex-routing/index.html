@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="用 SSH Host alias、共享 shell 配置和明确的任务路由，让人和 Codex 都不会连错机器。" />
+    <meta name="theme-color" content="#080b09" />
+    <title>别再背 IP：用 SSH Alias 管好多台机器 — Shubo</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="terminal-window post-window">
+      <header class="terminal-bar">
+        <div class="window-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="terminal-title">shubo@lab: ~/posts/ssh-alias-codex-routing.md</div>
+        <div class="terminal-state"><span></span> read</div>
+      </header>
+
+      <div class="terminal-screen post-screen">
+        <nav class="command-nav" aria-label="主导航">
+          <span class="prompt">shubo@lab:~/posts$</span>
+          <a href="/">cd ~</a>
+          <a href="/#posts">ls ../posts/</a>
+          <a href="https://github.com/shubolab" target="_blank" rel="noreferrer">git remote -v ↗</a>
+        </nav>
+
+        <div class="command-line post-command"><span class="prompt">shubo@lab:~/posts$</span> cat ssh-alias-codex-routing.md</div>
+
+        <article>
+          <header class="post-header">
+            <div class="post-label">POST / 002</div>
+            <h1>别再背 IP：管好多台机器，也让 Codex 别跑错片场</h1>
+            <p class="post-deck">我本机 SSH 配置里有 homelab、debian-dell、pvenode 等真实别名。这里讲讲它们怎么帮我省脑子，以及怎么把同一套规则交给 AI。</p>
+            <div class="post-meta"><span>2026-08-09</span><span>Shubo</span><span>8 min</span></div>
+          </header>
+
+          <div class="post-content">
+            <p>机器少的时候，管理服务器靠记忆完全没问题。一台云主机、一个端口、一把密钥，输几次就记住了。后来机器多起来，我发现自己每次连接前都在做一道不该存在的选择题：这个 IP 是家里的机器，还是那台 VPS？端口是默认的，还是我三个月前改过的那个？</p>
+
+            <p>再后来我开始让 Codex 帮忙查服务。人记错 IP 最多连错一次，AI 拿到一句“去服务器上看一下”，有可能非常勤快地在错误的机器上把整套排查流程跑完。效率很高，方向完全不对。</p>
+
+            <p>我现在的做法不复杂：<strong>SSH alias 负责给机器起稳定的名字，shell alias 负责缩短常用动作，任务说明负责告诉 Codex 去哪里、在哪个目录、能做什么。</strong>三件事分开以后，脑子终于不用兼职做 DNS。</p>
+
+            <h2>先给每台机器一个能看懂的名字</h2>
+
+            <p>我的 <strong>~/.ssh/config</strong> 里现在有 <strong>homelab</strong>、<strong>debian-dell</strong>、<strong>debian-dell-lan</strong>、<strong>pvenode</strong>、<strong>pvenode-ssh</strong> 等别名。下面的字段都做了脱敏，但 Host 名是我实际在用的。</p>
+
+            <pre>Host homelab
+    HostName <span class="redacted">&lt;REDACTED_HOST&gt;</span>
+    User <span class="redacted">&lt;REDACTED_USER&gt;</span>
+    Port <span class="redacted">&lt;REDACTED_PORT&gt;</span>
+    IdentityFile ~/.ssh/<span class="redacted">&lt;REDACTED_KEY&gt;</span>
+    ServerAliveInterval 30
+    ServerAliveCountMax 3</pre>
+
+            <p>有了这段配置，连接命令就从一长串参数变成了：</p>
+
+            <pre>ssh homelab</pre>
+
+            <p>这个变化看着只是少打几个字，真正的价值是把“怎么连接”和“连哪台机器”拆开了。主机地址、端口、用户和密钥以后发生变化，我只改配置，日常命令、脚本和给 Codex 的任务描述都不用跟着改。</p>
+
+            <p>别名最好按机器的角色取，而不是按 IP 尾号取。<strong>homelab</strong> 至少还能提醒我这是家里的服务节点；<strong>server-110</strong> 只会提醒我，当初起名时已经放弃思考。</p>
+
+            <h2>同一台机器有两条路，就把路写进名字</h2>
+
+            <p><strong>debian-dell</strong> 和 <strong>debian-dell-lan</strong> 实际上指向同一台机器，但用途不同：前者是日常使用的远程连接路径，后者保留为局域网直连。外面的路出问题时，我在家里还能走 LAN，不至于为了修隧道先把自己锁在门外。</p>
+
+            <pre>Host debian-dell
+    HostName <span class="redacted">&lt;REDACTED_EXTERNAL_HOST&gt;</span>
+    User <span class="redacted">&lt;REDACTED_USER&gt;</span>
+    IdentityFile ~/.ssh/<span class="redacted">&lt;REDACTED_KEY&gt;</span>
+    ProxyCommand <span class="redacted">&lt;REDACTED_PROXY_COMMAND&gt;</span>
+
+Host debian-dell-lan
+    HostName <span class="redacted">&lt;REDACTED_LAN_IP&gt;</span>
+    User <span class="redacted">&lt;REDACTED_USER&gt;</span>
+    IdentityFile ~/.ssh/<span class="redacted">&lt;REDACTED_KEY&gt;</span></pre>
+
+            <p>我在 PVE 相关机器上也用了类似的命名：<strong>pve-debian13</strong>、<strong>pve-debian13-cf</strong>、<strong>pve-debian13-frp</strong>。基础名表示机器，后缀表示连接路径。看到命令就知道走的是哪条路，排查时不用靠猜。</p>
+
+            <p>这里有个小原则：默认别名应该指向平时最稳、最常用的路径；带后缀的别名留给局域网、代理、隧道或救援路径。否则每次执行 <strong>ssh host</strong> 之前还要回忆“这个默认到底默认了什么”，别名就算白起了。</p>
+
+            <h2>跨机器共享 alias，我会把“方便”和“秘密”分开</h2>
+
+            <p>SSH 配置里真正不能到处同步的是私钥。主机名、用户名和网络拓扑虽然通常不算密钥，也属于不该随手公开的基础设施信息。所以我不会把整个 <strong>~/.ssh</strong> 扔进 Git，然后安慰自己仓库是 private。</p>
+
+            <p>如果要在 Mac、笔记本和管理机之间共享，我更愿意拆成下面这样：</p>
+
+            <pre>~/.ssh/config
+~/.ssh/config.d/
+├── 00-shared.conf       # 通用选项和统一的 Host 命名
+└── 90-local.conf        # 当前机器的地址、用户、密钥和代理
+
+~/dotfiles/shell/
+├── aliases.shared.zsh   # 各台机器都能用
+├── aliases.macos.zsh    # 只给 macOS
+└── aliases.linux.zsh    # 只给 Linux</pre>
+
+            <p>主配置只负责 Include：</p>
+
+            <pre>Include ~/.ssh/config.d/*.conf</pre>
+
+            <p><strong>aliases.shared.zsh</strong> 里放不含秘密的快捷命令，例如：</p>
+
+            <pre>alias h='ssh homelab'
+alias dell='ssh debian-dell'
+alias dell-lan='ssh debian-dell-lan'
+alias pve='ssh pvenode'
+
+alias gs='git status --short --branch'
+alias gl='git log --oneline --decorate -12'</pre>
+
+            <p>共享文件可以进自己的 dotfiles 仓库，本机连接细节放在忽略列表里。真要同步完整连接配置，也应该先加密；私钥则继续使用密码管理器、安全拷贝或硬件密钥处理。Git 历史很长，长到足够记住每一次“我晚点再删”。</p>
+
+            <p>Shell 启动时按系统加载：</p>
+
+            <pre>source ~/dotfiles/shell/aliases.shared.zsh
+
+case "$(uname -s)" in
+  Darwin) source ~/dotfiles/shell/aliases.macos.zsh ;;
+  Linux)  source ~/dotfiles/shell/aliases.linux.zsh ;;
+esac</pre>
+
+            <p>简单 alias 适合固定命令；需要接收参数、做判断时就写 shell function。不要把一段八十字符的管道伪装成 alias，然后半年后没人敢碰，包括当初写它的自己。</p>
+
+            <h2>让 Codex 去指定机器，别只说“去服务器看看”</h2>
+
+            <p>Codex 在本地仓库里启动，并不会自动知道我要操作哪台远端机器。我的任务描述至少会写四件事：<strong>目标 SSH alias、远端工作目录、第一组只读检查、允许修改的范围。</strong></p>
+
+            <p>例如，我要它去 homelab 检查一个项目，会直接这样说：</p>
+
+            <pre>目标机器：homelab
+远端目录：<span class="redacted">&lt;REMOTE_PROJECT_DIR&gt;</span>
+
+先执行并报告：
+1. hostname
+2. pwd
+3. git status --short --branch
+4. git rev-parse HEAD
+
+只操作 homelab，不要连接其他机器。
+先做只读检查；需要修改或重启服务时，再按任务范围继续。</pre>
+
+            <p>第一条远程命令通常也很朴素：</p>
+
+            <pre>ssh homelab '
+  cd <span class="redacted">&lt;REMOTE_PROJECT_DIR&gt;</span> &&
+  hostname &&
+  pwd &&
+  git status --short --branch &&
+  git rev-parse HEAD
+'</pre>
+
+            <p>这几行会同时证明三件事：连的是哪台机器、站在哪个目录、代码目前是什么状态。后面即使要部署，也先有一张清楚的起点照片。否则最后看到服务返回 200，只能证明某个地方有东西活着，不能证明你刚改的版本真的在那里。</p>
+
+            <h2>把机器路由写进 AGENTS.md</h2>
+
+            <p>如果一个仓库经常需要跨机器操作，我会在项目的 <strong>AGENTS.md</strong> 里放一段很短的路由说明。这里同样只写 alias 和职责，不写地址、密码或密钥：</p>
+
+            <pre>## Machine routing
+
+- homelab: personal services; read-only checks by default.
+- debian-dell: default route to the remote workstation.
+- debian-dell-lan: LAN rescue route for the same workstation.
+- pvenode: virtualization host; do not mutate without explicit scope.
+
+For every remote task:
+1. print hostname, pwd, branch and HEAD first;
+2. stay inside the named remote directory;
+3. never fan out to another host unless requested.</pre>
+
+            <p>这样做的好处不是让 AI “更聪明”，而是减少它需要猜的东西。alias 解决机器身份，目录解决操作边界，分支和 SHA 解决版本身份。提示词不用写得像合同，但关键坐标得有。</p>
+
+            <h2>改配置以后，先解析，再连接</h2>
+
+            <p>新增或调整 SSH alias 后，我会先用 <strong>ssh -G</strong> 看 OpenSSH 最终解析出的配置。它不会发起连接，适合检查旧配置是否抢先匹配、IdentityFile 有没有用错、ProxyCommand 是否真的生效。</p>
+
+            <pre>ssh -G debian-dell
+ssh -G debian-dell-lan</pre>
+
+            <div class="post-note">这两个命令的输出可能包含真实主机名、用户名、密钥路径和代理配置。自己检查没问题，截图、发帖或粘给第三方前要脱敏。本文只公开了 Host alias。</div>
+
+            <p>解析正确以后再做一次实际连接。对于重要机器，我还会确认公钥登录成功，并明确测试密码登录被拒绝。能连上只是半张答卷；不该用的方式连不上，才是另一半。</p>
+
+            <h2>我踩过的几个小坑</h2>
+
+            <p>第一，同一个 alias 在不同电脑上指向不同机器。这个问题看起来很蠢，出现场景却很多，尤其是手工复制配置以后。共享 Host 命名就是为了避免这种分叉。</p>
+
+            <p>第二，只同步 shell alias，不同步 SSH Host。结果 <strong>alias h='ssh homelab'</strong> 在新电脑上存在，<strong>homelab</strong> 却不存在。快捷方式很完整，路没铺。</p>
+
+            <p>第三，把“去生产看一下”交给 Codex，却不写 alias 和目录。它可能先花时间找机器，也可能根据上下文选一台看起来最像的。AI 的主动性在这里不是优点，跟出租车司机主动给你换目的地差不多。</p>
+
+            <p>第四，为了省事，把私钥也塞进 dotfiles。这个不叫自动化，叫自动扩散。共享配置和共享凭据是两件事，最好永远别合并。</p>
+
+            <h2>最后留一份最小规则</h2>
+
+            <p>如果只记住几条，我会留这五条：用角色命名机器；同机不同路径加后缀；共享 alias，不公开连接细节；远程任务先报 hostname、cwd、branch 和 SHA；给 Codex 的每个任务都写清目标 alias 与目录。</p>
+
+            <p>这些东西不会让家里的机器变少，也不会让 SSH 变得更酷。它只是把“我应该知道自己在哪”从记忆题变成配置题。机器一多，这点朴素的确定性非常值钱。</p>
+
+            <div class="post-end">
+              <a href="/">cd ~</a>
+              <a href="/#posts">ls ../posts/</a>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <footer class="terminal-footer"><span>UTF-8</span><span>ssh-alias-codex-routing.md</span><span>sanitized</span><span>© 2026 SHUBO</span></footer>
+    </main>
+  </body>
+</html>
