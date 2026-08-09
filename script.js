@@ -2,6 +2,7 @@ const form = document.querySelector('#cli-form');
 const input = document.querySelector('#cli-input');
 const cliOutput = document.querySelector('#cli-output');
 const bootTranscript = document.querySelector('#boot-transcript');
+const neofetchTemplate = document.querySelector('.neofetch-output').cloneNode(true);
 const history = [];
 let historyIndex = 0;
 let bootAnimationFrame = null;
@@ -51,6 +52,14 @@ function addEntry(command, result, error = false) {
   resultLine.className = error ? 'result error' : 'result';
   resultLine.textContent = result;
   entry.append(createPrompt(command), resultLine);
+  cliOutput.append(entry);
+  entry.scrollIntoView({ block: 'nearest' });
+}
+
+function addNeofetchEntry() {
+  const entry = document.createElement('div');
+  entry.className = 'terminal-entry';
+  entry.append(createPrompt('neofetch'), neofetchTemplate.cloneNode(true));
   cliOutput.append(entry);
   entry.scrollIntoView({ block: 'nearest' });
 }
@@ -151,6 +160,10 @@ function runCommand(rawCommand) {
     addEntry(command, 'opening github.com/shubolab/shubolab');
     return;
   }
+  if (command === 'neofetch') {
+    addNeofetchEntry();
+    return;
+  }
 
   const response = responses[command];
   if (response) addEntry(command, typeof response === 'function' ? response() : response);
@@ -162,20 +175,29 @@ function completeInput() {
   const matches = commandNames.filter((command) => command.startsWith(value));
   if (matches.length === 1) input.value = matches[0];
   else if (matches.length > 1) addEntry(value || '[tab]', matches.join('  '));
+  syncInputWidth();
 }
 
 function moveHistory(direction) {
   if (!history.length) return;
   historyIndex = Math.min(history.length, Math.max(0, historyIndex + direction));
   input.value = history[historyIndex] ?? '';
+  syncInputWidth();
+}
+
+function syncInputWidth() {
+  input.style.width = `${Math.max(1, input.value.length + 1)}ch`;
 }
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();
   const value = input.value;
   input.value = '';
+  syncInputWidth();
   runCommand(value);
 });
+
+input.addEventListener('input', syncInputWidth);
 
 input.addEventListener('keydown', (event) => {
   if (event.key === 'ArrowUp') { event.preventDefault(); moveHistory(-1); }
@@ -209,8 +231,11 @@ document.querySelectorAll('.extra-keys button').forEach((button) => {
     if (action === 'home') input.setSelectionRange(0, 0);
     if (action === 'end') input.setSelectionRange(input.value.length, input.value.length);
     if (action === 'control' || action === 'alt') button.classList.toggle('latched');
+    syncInputWidth();
     input.focus();
   });
 });
 
 startBootStream();
+syncInputWidth();
+input.focus({ preventScroll: true });

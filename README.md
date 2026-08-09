@@ -5,7 +5,8 @@ Shubo 的个人 About 与博客站点，使用接近真实 shell 的 Termux 多�
 - 纯静态 HTML / CSS / JavaScript，无构建依赖。
 - 首页资料来自 `shubolab/shubolab`，以 `gh repo view` 风格的纯文本展示。
 - 三个页面表现为 Termux Session 1–3，文章使用类似 `less` 的阅读状态栏。
-- Shell Prompt 参考 Powerlevel10k，每条命令和输出都有独立边界；首页以可中断的打字机效果运行 `neofetch`。
+- Shell Prompt 参考 Powerlevel10k，每条命令和输出都有独立边界；首页以可中断的打字机效果运行接近原版布局的 `neofetch`。
+- 输入 Prompt 固定在 Termux 扩展键上方，默认聚焦，并显示跟随输入的块状闪烁光标。
 - 首页终端支持 `help`、`neofetch`、`whoami`、`ls posts`、`cat about.md`、`cat contact.txt`、`gh profile`、`open 1`、`open 2` 等命令，并支持历史和 Tab 补全。
 - 文章通过 `cat post.md | markdown-preview` 呈现，使用独立的 Markdown 阅读排版。
 - SSH 相关文章只公开本机真实 Host alias，连接地址、用户、端口、密钥和代理配置均已脱敏。
