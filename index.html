@@ -3,106 +3,98 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Shubo 的个人博客：LLM 应用开发、网络安全和一些真实的折腾记录。" />
-    <meta name="theme-color" content="#080b09" />
+    <meta name="description" content="Shubo 的个人终端：LLM 应用开发、网络安全和真实的折腾记录。" />
+    <meta name="theme-color" content="#101311" />
     <title>shubo@lab:~</title>
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
-    <main class="terminal-window">
-      <header class="terminal-bar">
-        <div class="window-dots" aria-hidden="true"><i></i><i></i><i></i></div>
-        <div class="terminal-title">shubo@lab: ~</div>
-        <div class="terminal-state"><span></span> online</div>
+    <main class="termux-app">
+      <header class="termux-header">
+        <div class="termux-brand"><span aria-hidden="true">$_</span><strong>Termux</strong></div>
+        <div class="termux-host">shubo@lab</div>
+        <button class="termux-menu" type="button" aria-label="菜单">⋮</button>
       </header>
 
-      <div class="terminal-screen">
-        <nav class="command-nav" aria-label="主导航">
-          <span class="prompt">shubo@lab:~$</span>
-          <a href="#about">cat about.md</a>
-          <a href="#github-profile">gh profile</a>
-          <a href="#posts">ls posts/</a>
-          <a href="#contact">cat contact.txt</a>
-          <a href="https://github.com/shubolab" target="_blank" rel="noreferrer">git remote -v ↗</a>
-        </nav>
+      <nav class="session-strip" aria-label="终端会话">
+        <a class="session active" href="/"><span>1</span><strong>~</strong><i>×</i></a>
+        <a class="session" href="/posts/ssh-alias-codex-routing/"><span>2</span><strong>ssh-alias</strong><i>×</i></a>
+        <a class="session" href="/posts/qq-pet-codex/"><span>3</span><strong>qq-pet</strong><i>×</i></a>
+        <button class="new-session" type="button" title="全部文章" aria-label="查看全部文章">+</button>
+      </nav>
 
-        <section class="terminal-section intro" id="about" aria-labelledby="about-title">
-          <div class="command-line"><span class="prompt">shubo@lab:~$</span> cat about.md</div>
-          <div class="command-output intro-grid">
-            <div>
-              <p class="comment"># about</p>
-              <h1 id="about-title">Hi, I'm Shubo<span class="cursor" aria-hidden="true"></span></h1>
-              <p class="lead">目前主要做 LLM 应用开发和网络安全。这里放项目记录、踩坑复盘，以及偶尔能派上用场的命令。</p>
+      <div class="terminal-buffer" id="terminal-buffer">
+        <div id="boot-transcript">
+          <p class="system-line">Welcome to shubolab.github.io</p>
+          <p class="system-line">Documentation: type <button class="inline-command" data-command="help">help</button></p>
+
+          <div class="terminal-entry">
+            <p class="command"><span class="user">shubo@lab</span>:<span class="cwd">~</span>$ whoami</p>
+            <div class="output about-output">
+              <h1>Shubo</h1>
+              <p>目前主要做 LLM 应用开发和网络安全。</p>
+              <p>这里放项目记录、踩坑复盘，以及偶尔能派上用场的命令。</p>
             </div>
-            <dl class="profile-table">
-              <div><dt>focus.01</dt><dd>LLM application development</dd></div>
-              <div><dt>focus.02</dt><dd>Cybersecurity</dd></div>
-              <div><dt>languages</dt><dd>Python / Go</dd></div>
-              <div><dt>location</dt><dd>China</dd></div>
-            </dl>
           </div>
-        </section>
 
-        <section class="terminal-section profile-repo" id="github-profile" aria-labelledby="profile-title">
-          <div class="command-line"><span class="prompt">shubo@lab:~$</span> gh repo view shubolab/shubolab --readme</div>
-          <div class="command-output">
-            <div class="repo-heading">
-              <div>
-                <span class="repo-visibility">PUBLIC</span>
-                <h2 id="profile-title">shubolab/shubolab</h2>
-                <p>About 页面的资料来源。简介有变化时，以这个仓库为准。</p>
-              </div>
-              <a href="https://github.com/shubolab/shubolab" target="_blank" rel="noreferrer">view repository ↗</a>
+          <div class="terminal-entry">
+            <p class="command"><span class="user">shubo@lab</span>:<span class="cwd">~</span>$ cat /etc/shubo-release</p>
+            <pre class="output key-values"><span>FOCUS_1</span>="LLM application development"
+<span>FOCUS_2</span>="Cybersecurity"
+<span>LANGUAGES</span>="Python, Go"</pre>
+          </div>
+
+          <div class="terminal-entry" id="posts">
+            <p class="command"><span class="user">shubo@lab</span>:<span class="cwd">~</span>$ ls -l --time-style=long-iso posts/</p>
+            <div class="output file-list" role="list">
+              <div class="file-line file-head" aria-hidden="true"><span>MODE</span><span>DATE</span><span>NAME</span></div>
+              <a class="file-line" role="listitem" href="/posts/ssh-alias-codex-routing/"><span>-rw-r--r--</span><time datetime="2026-08-09">2026-08-09</time><strong>ssh-alias-codex-routing.md</strong></a>
+              <a class="file-line" role="listitem" href="/posts/qq-pet-codex/"><span>-rw-r--r--</span><time datetime="2026-08-09">2026-08-09</time><strong>qq-pet-codex.md</strong></a>
+              <p>total 2</p>
             </div>
-            <img class="profile-card" src="https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=shubolab&amp;theme=github_dark" alt="Shubo 的 GitHub Profile Summary" loading="lazy" />
           </div>
-        </section>
 
-        <section class="terminal-section" id="posts" aria-labelledby="posts-title">
-          <div class="command-line"><span class="prompt">shubo@lab:~$</span> ls -lt posts/</div>
-          <div class="command-output">
-            <div class="listing-head" aria-hidden="true"><span>DATE</span><span>NAME</span><span>DESCRIPTION</span></div>
-            <h2 class="sr-only" id="posts-title">文章</h2>
-            <a class="file-row" href="/posts/ssh-alias-codex-routing/">
-              <time datetime="2026-08-09">2026-08-09</time>
-              <strong><span class="file-icon">~/</span>ssh-alias-codex-routing.md</strong>
-              <p>别再背 IP：管好多台机器，也让 Codex 别跑错片场</p>
-              <b>↗</b>
-            </a>
-            <a class="file-row" href="/posts/qq-pet-codex/">
-              <time datetime="2026-08-09">2026-08-09</time>
-              <strong><span class="file-icon">~/</span>qq-pet-codex.md</strong>
-              <p>QQ 宠物赛博复活：这次它不吃元宝</p>
-              <b>↗</b>
-            </a>
-            <div class="listing-summary">total 2 posts</div>
+          <div class="terminal-entry" id="profile">
+            <p class="command"><span class="user">shubo@lab</span>:<span class="cwd">~</span>$ gh repo view shubolab/shubolab</p>
+            <div class="output gh-output">
+              <p><strong>shubolab/shubolab</strong> <span>public</span></p>
+              <p>Hi there, I'm Shubo.</p>
+              <p>Currently working on:</p>
+              <p>  • LLM Application Development</p>
+              <p>  • Cybersecurity</p>
+              <p>Recent languages: Python, Go</p>
+              <a href="https://github.com/shubolab/shubolab" target="_blank" rel="noreferrer">View on GitHub: github.com/shubolab/shubolab</a>
+            </div>
           </div>
-        </section>
 
-        <section class="terminal-section" id="contact" aria-labelledby="contact-title">
-          <div class="command-line"><span class="prompt">shubo@lab:~$</span> cat contact.txt</div>
-          <div class="command-output contact-output">
-            <h2 class="sr-only" id="contact-title">联系方式</h2>
-            <p><span>EMAIL</span><a href="mailto:wsb814183583@gmail.com">wsb814183583@gmail.com</a></p>
-            <p><span>WECHAT</span><strong>i814183583</strong></p>
-            <p><span>GITHUB</span><a href="https://github.com/shubolab" target="_blank" rel="noreferrer">github.com/shubolab ↗</a></p>
+          <div class="terminal-entry" id="contact">
+            <p class="command"><span class="user">shubo@lab</span>:<span class="cwd">~</span>$ cat contact.txt</p>
+            <pre class="output contact-lines">EMAIL   <a href="mailto:wsb814183583@gmail.com">wsb814183583@gmail.com</a>
+WECHAT  i814183583
+GITHUB  <a href="https://github.com/shubolab" target="_blank" rel="noreferrer">github.com/shubolab</a></pre>
           </div>
-        </section>
+        </div>
 
-        <section class="interactive-terminal" aria-label="可交互终端">
-          <div id="cli-output" class="cli-output" aria-live="polite">
-            <p>Type <strong>help</strong> to see available commands.</p>
-          </div>
-          <form id="cli-form" autocomplete="off">
-            <label class="prompt" for="cli-input">visitor@shubolab:~$</label>
-            <input id="cli-input" name="command" spellcheck="false" aria-label="输入终端命令" autofocus />
-          </form>
-        </section>
+        <div id="cli-output" aria-live="polite"></div>
+
+        <form id="cli-form" autocomplete="off">
+          <label for="cli-input"><span class="user">visitor@shubolab</span>:<span class="cwd">~</span>$</label>
+          <input id="cli-input" name="command" spellcheck="false" autocapitalize="off" autofocus aria-label="输入终端命令" />
+        </form>
       </div>
 
-      <footer class="terminal-footer">
-        <span>UTF-8</span><span>2 posts</span><span>main*</span><span>© 2026 SHUBO</span>
-      </footer>
+      <div class="extra-keys" aria-label="Termux 扩展键">
+        <button type="button" data-key-action="escape">ESC</button>
+        <button type="button" data-key-action="control">CTRL</button>
+        <button type="button" data-key-action="alt">ALT</button>
+        <button type="button" data-key-action="tab">TAB</button>
+        <button type="button" data-insert="/">/</button>
+        <button type="button" data-insert="-">-</button>
+        <button type="button" data-key-action="home">HOME</button>
+        <button type="button" data-key-action="up">↑</button>
+        <button type="button" data-key-action="down">↓</button>
+        <button type="button" data-key-action="end">END</button>
+      </div>
     </main>
     <script src="/script.js"></script>
   </body>

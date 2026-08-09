@@ -10,11 +10,17 @@
   </head>
   <body>
     <main class="terminal-window post-window">
-      <header class="terminal-bar">
-        <div class="window-dots" aria-hidden="true"><i></i><i></i><i></i></div>
-        <div class="terminal-title">shubo@lab: ~/posts/qq-pet-codex.md</div>
-        <div class="terminal-state"><span></span> read</div>
+      <header class="termux-header">
+        <div class="termux-brand"><span aria-hidden="true">$_</span><strong>Termux</strong></div>
+        <div class="termux-host">shubo@lab</div>
+        <button class="termux-menu" type="button" aria-label="菜单">⋮</button>
       </header>
+      <nav class="session-strip" aria-label="终端会话">
+        <a class="session" href="/"><span>1</span><strong>~</strong><i>×</i></a>
+        <a class="session" href="/posts/ssh-alias-codex-routing/"><span>2</span><strong>ssh-alias</strong><i>×</i></a>
+        <a class="session active" href="/posts/qq-pet-codex/"><span>3</span><strong>qq-pet</strong><i>×</i></a>
+        <a class="new-session" href="/#posts" title="全部文章" aria-label="查看全部文章">+</a>
+      </nav>
 
       <div class="terminal-screen post-screen">
         <nav class="command-nav" aria-label="主导航">
@@ -98,7 +104,7 @@
         </article>
       </div>
 
-      <footer class="terminal-footer"><span>UTF-8</span><span>qq-pet-codex.md</span><span>readonly</span><span>© 2026 SHUBO</span></footer>
+      <footer class="terminal-footer"><span>qq-pet-codex.md</span><span>100%</span><span>(END)</span><a href="/">q: quit</a></footer>
     </main>
   </body>
 </html>
