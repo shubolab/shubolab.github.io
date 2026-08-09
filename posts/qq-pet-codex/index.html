@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="QQpet-codex：让 QQ 宠物以 Codex v2 桌面宠物的方式赛博复活。" />
+    <meta name="theme-color" content="#111310" />
+    <title>QQ 宠物赛博复活 — Shubo</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="article-header site-header">
+      <a class="wordmark" href="/">SHUBO<span class="accent">.</span></a>
+      <nav aria-label="主导航">
+        <a href="/">About</a>
+        <a class="active" href="/#writing">Writing</a>
+        <a href="https://github.com/shubolab/qq-pet-codex" target="_blank" rel="noreferrer">Repository ↗</a>
+      </nav>
+    </header>
+
+    <main>
+      <article>
+        <header class="article-shell article-hero">
+          <div class="article-kicker">FIELD NOTE / 001</div>
+          <h1>QQ 宠物赛博复活：这次它不吃元宝，只吃算力</h1>
+          <p class="article-deck">一只企鹅、一张图集、一个安装 Skill，以及一套认真得有点好笑的 QA。</p>
+          <div class="article-meta">
+            <span>2026.08.09</span>
+            <span>BY SHUBO</span>
+            <span>约 6 分钟</span>
+          </div>
+        </header>
+
+        <img
+          class="article-cover"
+          src="https://raw.githubusercontent.com/shubolab/qq-pet-codex/main/qa/contact-sheet-extended.png"
+          alt="QQpet-codex v2 的完整动作状态图集"
+        />
+
+        <div class="article-shell article-body">
+          <p>很久以前，桌面右下角住着一只企鹅。</p>
+          <p>它会走路，会眨眼，会饿，还会精准消耗小学生并不充裕的上网时间。</p>
+          <p>后来我们长大了。</p>
+          <p>企鹅下线了，任务栏清净了，需求列表却开始繁殖。</p>
+          <p>现在，它回来了。</p>
+          <p>只是这次没有住进 QQ，而是住进了 Codex。</p>
+          <p>项目名叫 <a href="https://github.com/shubolab/qq-pet-codex" target="_blank" rel="noreferrer">QQpet-codex</a>。</p>
+          <p>这是一场相当字面意义上的赛博复活。</p>
+          <p>没有玄学，没有还魂丹，主要成分是 WebP、Python、Shell 和一点对像素的执念。</p>
+
+          <h2>01. 复活，但先签一份技术合同</h2>
+          <p>QQpet-codex 不是把一张企鹅图片贴到窗口角落。</p>
+          <p>它把桌面宠物打包成了一个完整的 Codex v2 宠物包。</p>
+          <p>核心是一张 <strong>1536 × 2288</strong> 的 RGBA 无损 WebP 图集。</p>
+          <p>图集有 8 列、11 行。</p>
+          <p>每个单元格是 <strong>192 × 208</strong>。</p>
+          <p>配置里的版本号是 <strong>spriteVersionNumber: 2</strong>。</p>
+          <p>听起来不像养宠物，像在给企鹅办理电子户籍。</p>
+          <p>但户籍很重要。</p>
+          <p>没有这些约束，企鹅可能眨一次眼就瞬移半个屏幕。</p>
+          <p>那不是可爱，是图集坐标算错了。</p>
+
+          <h2>02. 待机，不等于假装断网</h2>
+          <p>新版 idle 使用六帧循环。</p>
+          <p>它会呼吸，也会完整眨眼。</p>
+          <p>这些帧是按原生细节重新生成的，不是把旧的小图强行放大再锐化。</p>
+          <p>毕竟企鹅可以复古，像素不能糊弄。</p>
+          <p>旧 idle 的平均可见边界大约是 130 × 146。</p>
+          <p>新版提升到 156 × 198。</p>
+          <p>宽度增加 20%，高度增加 35.62%，包围盒面积增加 62.69%。</p>
+          <p>翻译成人话：它终于不像远远站着等公交了。</p>
+          <p>Hover 动作也重新绘制，因为旧版放到新 idle 旁边，明显小了一圈。</p>
+          <p>技术结论叫“视觉体量不一致”。</p>
+          <p>日常说法叫“这只企鹅怎么突然缩水了”。</p>
+
+          <figure>
+            <img
+              src="https://raw.githubusercontent.com/shubolab/qq-pet-codex/main/qa/previews/idle.gif"
+              alt="QQpet-codex 六帧呼吸和眨眼待机动画"
+              loading="lazy"
+            />
+            <figcaption>新版 idle：六帧呼吸与完整眨眼。企鹅目前生命体征稳定。</figcaption>
+          </figure>
+
+          <h2>03. 它会思考，也会陪你失败</h2>
+          <p>一只合格的 Codex 宠物，不能只负责站岗。</p>
+          <p>它有 running、thinking、review、waiting、waving 和 failed 等状态。</p>
+          <p>你写代码时，它忙。</p>
+          <p>你等结果时，它也等。</p>
+          <p>任务失败时，它甚至有专门的 failed 动画。</p>
+          <p>很有团队精神。</p>
+          <p>至少在报错这件事上，你不是一个人。</p>
+          <p>其中 running-right、running-left、waving、failed、waiting、thinking 和 review，</p>
+          <p>都与上一份已经验证的 v2 图集逐像素一致。</p>
+          <p>能保留的就保留。</p>
+          <p>复活不是让每一个像素都失忆。</p>
+
+          <h2>04. 企鹅往哪看，是个严肃问题</h2>
+          <p>项目保留了已验证的 16 个看向方向。</p>
+          <p>然后以新的 idle 中性帧重新做了注册。</p>
+          <p>使用的比例是 <strong>0.7096774193548387</strong>。</p>
+          <p>小数点后这么多位，说明它不是“差不多朝左”。</p>
+          <p>它是真的朝左。</p>
+          <p>方向素材还做了三次独立盲测。</p>
+          <p>硬基数方向全部通过。</p>
+          <p>三个靠近基数的中间方向被保留为复核级提示。</p>
+          <p>也就是说，企鹅偶尔会表现出一点“我好像在看你旁边那个人”。</p>
+          <p>但象限没反，顺序没乱，身份也没漂移。</p>
+          <p>这已经比很多停车场导航可靠了。</p>
+
+          <h2>05. 最赛博的不是宠物，是安装方式</h2>
+          <p>这个仓库不只提供素材。</p>
+          <p>它还提供了一个仓库级 Codex Skill。</p>
+          <p>Skill 位于 <strong>.agents/skills/qqpet-codex</strong>。</p>
+          <p>你可以让 Codex 只验证，也可以让它安全安装。</p>
+          <p>“只验证”真的只读，不会顺手摸你的配置。</p>
+          <p>“安全安装”则要先经过隔离环境预检。</p>
+          <p>安装器会验证内置包，把新版本放进暂存位置，再验证一次。</p>
+          <p>如果已经装过旧版，它会先移到带时间戳的备份目录。</p>
+          <p>最后，安装器还会从真实目标路径再验一次。</p>
+          <p>旧时代养宠物怕它饿死。</p>
+          <p>新时代养宠物怕 SHA-256 对不上。</p>
+
+          <div class="article-note">安全边界很明确：验证不会安装；真实安装前必须先在一次性的隔离 CODEX_HOME 中预检；现有版本会备份，不会自动删除。</div>
+
+          <h2>06. 如何把它领回家</h2>
+          <p>先打开项目仓库。</p>
+          <p>如果只想检查包是否完整，可以对 Codex 说：</p>
+          <pre class="article-command">使用 $qqpet-codex 只验证仓库内置的 QQpet-codex v2 宠物包，不要安装。</pre>
+          <p>如果确定要安装，可以说：</p>
+          <pre class="article-command">使用 $qqpet-codex 安全安装仓库内置的 QQpet-codex v2 桌面宠物；先用隔离的 CODEX_HOME 预检，再安装到我的真实 Codex 配置。</pre>
+          <p>安装完成后，刷新宠物列表，再重新选择 <strong>QQpet-codex</strong>。</p>
+          <p>只有刷新之后仍然没加载新图集，才需要重启 Codex。</p>
+          <p>先刷新，后重启。</p>
+          <p>企鹅刚醒，不要一上来就拔电源。</p>
+
+          <h2>07. 一只通过 QA 的企鹅</h2>
+          <p>这个项目最反差的地方，是它看起来很怀旧，验证流程却很现代。</p>
+          <p>确定性图集验证通过：0 错误，0 警告。</p>
+          <p>PNG 和 WebP 解码后的像素完全一致：0 个变化像素。</p>
+          <p>从已提交源素材干净重建，结果与内置图集字节完全一致。</p>
+          <p>色键去溢色严格执行一次，alpha 保持不变，拒绝像素为 0。</p>
+          <p>标准动画视觉 QA 通过。</p>
+          <p>16 方向语义和方向连续性复核通过。</p>
+          <p>隔离安装通过，真实安装、备份和目标路径复验也通过。</p>
+          <p>当前图集还有一枚完整的 SHA-256。</p>
+          <p>这可能是世界上少数能拿出 QA 证据链的桌面企鹅。</p>
+          <p>它不会做周报。</p>
+          <p>但它自己就是一份周报。</p>
+
+          <h2>08. 能复制，也能继续改</h2>
+          <p>仓库原创的代码、文档、生成美术和 QA 材料采用 CC0 1.0。</p>
+          <p>可以复制、修改、再分发，也可以商用，不强制署名。</p>
+          <p>项目仍然保留了来源说明。</p>
+          <p>参考链指向 chenboos5/QQpet-codex。</p>
+          <p>同时，QQ、QQPet、QGG、Codex 等名称和标志仍属于各自权利人。</p>
+          <p>CC0 不会顺便把别人的商标也打包送你。</p>
+          <p>项目与腾讯、OpenAI 或参考仓库维护者不存在隶属或背书关系。</p>
+          <p>这不是官方续作。</p>
+          <p>更像一封用像素、脚本和校验和写成的同人回信。</p>
+
+          <h2>09. 欢迎回来，老朋友</h2>
+          <p>QQ 宠物的赛博复活，没有把过去原样搬回来。</p>
+          <p>喂养按钮没有回来。</p>
+          <p>心情值没有回来。</p>
+          <p>需要偷偷充值的焦虑也没有回来。</p>
+          <p>回来的是那个会在桌面角落走动、眨眼、陪你发呆的小东西。</p>
+          <p>只是现在，它学会了在你写代码时一起思考。</p>
+          <p>也学会了在安装前备份自己。</p>
+          <p>童年负责提供记忆。</p>
+          <p>工程负责让记忆别崩。</p>
+          <p>至于算力——</p>
+          <p>放心，它目前还没有学会自己刷你的信用卡。</p>
+
+          <div class="article-end">
+            <a href="https://github.com/shubolab/qq-pet-codex" target="_blank" rel="noreferrer">查看 QQpet-codex ↗</a>
+            <a href="/">返回 About ←</a>
+          </div>
+        </div>
+      </article>
+    </main>
+  </body>
+</html>

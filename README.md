@@ -1,6 +1,10 @@
-# SHUBO LAB
+# shubolab.github.io
 
-一个极简、深色、偏极客感的个人博客主题，使用原生 HTML / CSS / JavaScript 构建，无需构建步骤，可直接部署到 GitHub Pages。
+Shubo 的个人 About 与博客站点。
+
+- 纯静态 HTML / CSS，无构建依赖。
+- 首页只展示可核实的个人资料和已发布文章。
+- 推送到 `main` 后由 GitHub Actions 自动发布到 GitHub Pages。
 
 ## 本地预览
 
@@ -8,10 +12,4 @@
 python3 -m http.server 4173
 ```
 
-然后打开 <http://localhost:4173>。
-
-## GitHub Pages
-
-仓库包含 `.github/workflows/pages.yml`。推送到 `main` 后，GitHub Actions 会自动发布站点到 GitHub Pages。
-
-首次使用时，在仓库 Settings → Pages → Build and deployment → Source 中选择 **GitHub Actions**。
+打开 <http://localhost:4173>。
