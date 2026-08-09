@@ -28,24 +28,41 @@
           <p class="system-line">Welcome to shubolab.github.io</p>
           <p class="system-line">Documentation: type <button class="inline-command" data-command="help">help</button></p>
 
-          <div class="terminal-entry">
-            <p class="command"><span class="user">shubo@lab</span>:<span class="cwd">~</span>$ whoami</p>
-            <div class="output about-output">
-              <h1>Shubo</h1>
-              <p>目前主要做 LLM 应用开发和网络安全。</p>
-              <p>这里放项目记录、踩坑复盘，以及偶尔能派上用场的命令。</p>
+          <div class="terminal-entry neofetch-entry">
+            <div class="p10k-prompt">
+              <div class="p10k-context"><span class="prompt-rail">╭─</span><span class="prompt-segment host">shubo@lab</span><span class="prompt-segment path">~</span><span class="prompt-ok">✓</span></div>
+              <div class="p10k-command"><span>╰─❯</span><code>neofetch</code></div>
+            </div>
+            <div class="output neofetch-output">
+              <pre class="ascii-logo" aria-hidden="true">       .--.
+      |o_o |
+      |:_/ |
+     //   \ \
+    (|     | )
+   /'\_   _/`\
+   \___)=(___/</pre>
+              <div class="fetch-info">
+                <h1><span>shubo</span>@<span>lab</span></h1>
+                <p class="fetch-rule">--------------------</p>
+                <p><b>Profile</b>: Shubo</p>
+                <p><b>Focus</b>: LLM Application Development</p>
+                <p><b>Security</b>: Cybersecurity</p>
+                <p><b>Languages</b>: Python, Go</p>
+                <p><b>Shell</b>: zsh + Powerlevel10k</p>
+                <p><b>Terminal</b>: Termux-style web</p>
+                <p><b>Sessions</b>: 3</p>
+                <p><b>Posts</b>: 2</p>
+                <p><b>GitHub</b>: <a href="https://github.com/shubolab" target="_blank" rel="noreferrer">shubolab</a></p>
+                <div class="fetch-colors" aria-label="主题颜色"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+              </div>
             </div>
           </div>
 
-          <div class="terminal-entry">
-            <p class="command"><span class="user">shubo@lab</span>:<span class="cwd">~</span>$ cat /etc/shubo-release</p>
-            <pre class="output key-values"><span>FOCUS_1</span>="LLM application development"
-<span>FOCUS_2</span>="Cybersecurity"
-<span>LANGUAGES</span>="Python, Go"</pre>
-          </div>
-
           <div class="terminal-entry" id="posts">
-            <p class="command"><span class="user">shubo@lab</span>:<span class="cwd">~</span>$ ls -l --time-style=long-iso posts/</p>
+            <div class="p10k-prompt">
+              <div class="p10k-context"><span class="prompt-rail">╭─</span><span class="prompt-segment host">shubo@lab</span><span class="prompt-segment path">~</span><span class="prompt-ok">✓</span></div>
+              <div class="p10k-command"><span>╰─❯</span><code>ls -l --time-style=long-iso posts/</code></div>
+            </div>
             <div class="output file-list" role="list">
               <div class="file-line file-head" aria-hidden="true"><span>MODE</span><span>DATE</span><span>NAME</span></div>
               <a class="file-line" role="listitem" href="/posts/ssh-alias-codex-routing/"><span>-rw-r--r--</span><time datetime="2026-08-09">2026-08-09</time><strong>ssh-alias-codex-routing.md</strong></a>
@@ -55,7 +72,10 @@
           </div>
 
           <div class="terminal-entry" id="profile">
-            <p class="command"><span class="user">shubo@lab</span>:<span class="cwd">~</span>$ gh repo view shubolab/shubolab</p>
+            <div class="p10k-prompt">
+              <div class="p10k-context"><span class="prompt-rail">╭─</span><span class="prompt-segment host">shubo@lab</span><span class="prompt-segment path">~</span><span class="prompt-ok">✓</span></div>
+              <div class="p10k-command"><span>╰─❯</span><code>gh repo view shubolab/shubolab</code></div>
+            </div>
             <div class="output gh-output">
               <p><strong>shubolab/shubolab</strong> <span>public</span></p>
               <p>Hi there, I'm Shubo.</p>
@@ -68,7 +88,10 @@
           </div>
 
           <div class="terminal-entry" id="contact">
-            <p class="command"><span class="user">shubo@lab</span>:<span class="cwd">~</span>$ cat contact.txt</p>
+            <div class="p10k-prompt">
+              <div class="p10k-context"><span class="prompt-rail">╭─</span><span class="prompt-segment host">shubo@lab</span><span class="prompt-segment path">~</span><span class="prompt-ok">✓</span></div>
+              <div class="p10k-command"><span>╰─❯</span><code>cat contact.txt</code></div>
+            </div>
             <pre class="output contact-lines">EMAIL   <a href="mailto:wsb814183583@gmail.com">wsb814183583@gmail.com</a>
 WECHAT  i814183583
 GITHUB  <a href="https://github.com/shubolab" target="_blank" rel="noreferrer">github.com/shubolab</a></pre>
@@ -77,9 +100,9 @@ GITHUB  <a href="https://github.com/shubolab" target="_blank" rel="noreferrer">g
 
         <div id="cli-output" aria-live="polite"></div>
 
-        <form id="cli-form" autocomplete="off">
-          <label for="cli-input"><span class="user">visitor@shubolab</span>:<span class="cwd">~</span>$</label>
-          <input id="cli-input" name="command" spellcheck="false" autocapitalize="off" autofocus aria-label="输入终端命令" />
+        <form id="cli-form" class="p10k-input" autocomplete="off">
+          <div class="p10k-context"><span class="prompt-rail">╭─</span><span class="prompt-segment host visitor">visitor@shubolab</span><span class="prompt-segment path">~</span></div>
+          <div class="p10k-command"><label for="cli-input">╰─❯</label><input id="cli-input" name="command" spellcheck="false" autocapitalize="off" aria-label="输入终端命令" /></div>
         </form>
       </div>
 

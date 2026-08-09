@@ -4,14 +4,18 @@ const cliOutput = document.querySelector('#cli-output');
 const bootTranscript = document.querySelector('#boot-transcript');
 const history = [];
 let historyIndex = 0;
+let bootAnimationFrame = null;
+let bootTextNodes = [];
+let bootIsStreaming = false;
 
 const commandNames = [
-  'help', 'whoami', 'pwd', 'ls', 'ls posts', 'cat about.md', 'cat contact.txt',
+  'help', 'neofetch', 'whoami', 'pwd', 'ls', 'ls posts', 'cat about.md', 'cat contact.txt',
   'gh profile', 'open 1', 'open 2', 'clear', 'reset', 'history', 'date', 'sudo'
 ];
 
 const responses = {
-  help: 'help             show commands\nwhoami           show profile\npwd              print working directory\nls posts         list published posts\ncat about.md     show about\ncat contact.txt  show contact\ngh profile       open profile source\nopen 1           open SSH alias post\nopen 2           open QQ pet post\nclear            clear screen\nreset            restore initial screen',
+  help: 'help             show commands\nneofetch         show profile\nwhoami           print user\npwd              print working directory\nls posts         list published posts\ncat about.md     show about\ncat contact.txt  show contact\ngh profile       open profile source\nopen 1           open SSH alias post\nopen 2           open QQ pet post\nclear            clear screen\nreset            restore initial screen',
+  neofetch: 'shubo@lab\n--------------------\nProfile:   Shubo\nFocus:     LLM Application Development\nSecurity:  Cybersecurity\nLanguages: Python, Go\nShell:     zsh + Powerlevel10k\nSessions:  3\nPosts:     2\nGitHub:    shubolab',
   whoami: 'Shubo — LLM application development / Cybersecurity',
   pwd: '/home/shubo',
   ls: 'about.md  contact.txt  posts/',
@@ -23,19 +27,96 @@ const responses = {
   sudo: 'visitor is not in the sudoers file. This incident will be reported.',
 };
 
+function createPrompt(command) {
+  const prompt = document.createElement('div');
+  prompt.className = 'p10k-prompt';
+  const context = document.createElement('div');
+  context.className = 'p10k-context';
+  context.innerHTML = '<span class="prompt-rail">╭─</span><span class="prompt-segment host visitor">visitor@shubolab</span><span class="prompt-segment path">~</span><span class="prompt-ok">✓</span>';
+  const commandLine = document.createElement('div');
+  commandLine.className = 'p10k-command';
+  const arrow = document.createElement('span');
+  arrow.textContent = '╰─❯';
+  const code = document.createElement('code');
+  code.textContent = command;
+  commandLine.append(arrow, code);
+  prompt.append(context, commandLine);
+  return prompt;
+}
+
 function addEntry(command, result, error = false) {
   const entry = document.createElement('div');
   entry.className = 'terminal-entry';
-  const commandLine = document.createElement('p');
-  commandLine.className = 'command';
-  commandLine.innerHTML = '<span class="user">visitor@shubolab</span>:<span class="cwd">~</span>$ ';
-  commandLine.append(document.createTextNode(command));
   const resultLine = document.createElement('pre');
   resultLine.className = error ? 'result error' : 'result';
   resultLine.textContent = result;
-  entry.append(commandLine, resultLine);
+  entry.append(createPrompt(command), resultLine);
   cliOutput.append(entry);
   entry.scrollIntoView({ block: 'nearest' });
+}
+
+function revealBootText() {
+  bootTextNodes.forEach(({ node, text }) => { node.nodeValue = text; });
+  document.body.classList.remove('stream-active', 'stream-interrupted');
+  bootTranscript.querySelectorAll('.stream-visible, .stream-output-visible').forEach((element) => {
+    element.classList.remove('stream-visible', 'stream-output-visible');
+  });
+  bootIsStreaming = false;
+}
+
+function stopBootStream(interrupted = false) {
+  if (!bootIsStreaming) return;
+  cancelAnimationFrame(bootAnimationFrame);
+  bootIsStreaming = false;
+  if (interrupted) {
+    document.body.classList.add('stream-interrupted');
+    const interrupt = document.createElement('p');
+    interrupt.className = 'interrupt-line';
+    interrupt.textContent = '^C';
+    cliOutput.append(interrupt);
+    input.focus({ preventScroll: true });
+  } else {
+    revealBootText();
+  }
+}
+
+function startBootStream() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const walker = document.createTreeWalker(bootTranscript, NodeFilter.SHOW_TEXT);
+  let currentNode;
+  while ((currentNode = walker.nextNode())) {
+    if (!currentNode.nodeValue.trim()) continue;
+    bootTextNodes.push({ node: currentNode, text: currentNode.nodeValue });
+  }
+  const totalCharacters = bootTextNodes.reduce((sum, item) => sum + item.text.length, 0);
+  if (!totalCharacters) return;
+
+  bootTextNodes.forEach(({ node }) => { node.nodeValue = ''; });
+  document.body.classList.add('stream-active');
+  bootIsStreaming = true;
+  const startedAt = performance.now();
+  const duration = 1800;
+
+  const render = (now) => {
+    if (!bootIsStreaming) return;
+    const target = Math.min(totalCharacters, Math.floor(((now - startedAt) / duration) * totalCharacters));
+    let remaining = target;
+    for (const item of bootTextNodes) {
+      const visibleLength = Math.min(item.text.length, Math.max(0, remaining));
+      item.node.nodeValue = item.text.slice(0, visibleLength);
+      if (visibleLength > 0) {
+        item.node.parentElement?.closest('.terminal-entry')?.classList.add('stream-visible');
+        item.node.parentElement?.closest('.output')?.classList.add('stream-output-visible');
+      }
+      remaining -= visibleLength;
+    }
+    if (target >= totalCharacters) {
+      revealBootText();
+      return;
+    }
+    bootAnimationFrame = requestAnimationFrame(render);
+  };
+  bootAnimationFrame = requestAnimationFrame(render);
 }
 
 function runCommand(rawCommand) {
@@ -45,11 +126,13 @@ function runCommand(rawCommand) {
   historyIndex = history.length;
 
   if (command === 'clear') {
+    stopBootStream(false);
     bootTranscript.hidden = true;
     cliOutput.replaceChildren();
     return;
   }
   if (command === 'reset') {
+    revealBootText();
     bootTranscript.hidden = false;
     cliOutput.replaceChildren();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -70,11 +153,8 @@ function runCommand(rawCommand) {
   }
 
   const response = responses[command];
-  if (response) {
-    addEntry(command, typeof response === 'function' ? response() : response);
-  } else {
-    addEntry(command, `bash: ${command}: command not found`, true);
-  }
+  if (response) addEntry(command, typeof response === 'function' ? response() : response);
+  else addEntry(command, `bash: ${command}: command not found`, true);
 }
 
 function completeInput() {
@@ -104,6 +184,13 @@ input.addEventListener('keydown', (event) => {
   if (event.ctrlKey && event.key.toLowerCase() === 'l') { event.preventDefault(); runCommand('clear'); }
 });
 
+document.addEventListener('keydown', (event) => {
+  if (bootIsStreaming && event.ctrlKey && event.key.toLowerCase() === 'c') {
+    event.preventDefault();
+    stopBootStream(true);
+  }
+});
+
 document.querySelectorAll('[data-command]').forEach((button) => {
   button.addEventListener('click', () => runCommand(button.dataset.command));
 });
@@ -125,3 +212,5 @@ document.querySelectorAll('.extra-keys button').forEach((button) => {
     input.focus();
   });
 });
+
+startBootStream();
