@@ -19,6 +19,7 @@
         <a class="session" href="/"><span>1</span><strong>~</strong><i>×</i></a>
         <a class="session active" href="/posts/ssh-alias-codex-routing/"><span>2</span><strong>ssh-alias</strong><i>×</i></a>
         <a class="session" href="/posts/qq-pet-codex/"><span>3</span><strong>qq-pet</strong><i>×</i></a>
+        <a class="session" href="/posts/server-2025-wsl2-boot/"><span>4</span><strong>srv2025</strong><i>×</i></a>
         <a class="new-session" href="/#posts" title="全部文章" aria-label="查看全部文章">+</a>
       </nav>
 
@@ -172,5 +173,14 @@ ssh -G debian-dell-lan</pre>
 
       <footer class="terminal-footer"><span>ssh-alias-codex-routing.md</span><span>100%</span><span>(END)</span><a href="/">q: quit</a></footer>
     </main>
+    <script>
+      const active = document.querySelector(".session.active");
+      const strip = active?.parentElement;
+      if (active && strip) {
+        const right = active.offsetLeft + active.offsetWidth;
+        const target = Math.min(active.offsetLeft, Math.max(0, right - strip.clientWidth + 12));
+        strip.scrollTo({ left: target });
+      }
+    </script>
   </body>
 </html>

@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="一台用来跑 Codex 桌面版的备用 Windows Server 2025，被附带的 WSL 转发脚本改了 hypervisorlaunchtype 之后启动失败。公网只考虑密钥登录的 SSH，RDP 不直接暴露。" />
+    <meta name="theme-color" content="#080b09" />
+    <title>启动项被改成 Auto 之后，Server 2025 退回了 Win10 — Shubo</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="terminal-window post-window">
+      <header class="termux-header">
+        <div class="termux-brand"><span aria-hidden="true">$_</span><strong>Termux</strong></div>
+        <div class="termux-host">shubo@lab</div>
+        <button class="termux-menu" type="button" aria-label="菜单">⋮</button>
+      </header>
+      <nav class="session-strip" aria-label="终端会话">
+        <a class="session" href="/"><span>1</span><strong>~</strong><i>×</i></a>
+        <a class="session" href="/posts/ssh-alias-codex-routing/"><span>2</span><strong>ssh-alias</strong><i>×</i></a>
+        <a class="session" href="/posts/qq-pet-codex/"><span>3</span><strong>qq-pet</strong><i>×</i></a>
+        <a class="session active" href="/posts/server-2025-wsl2-boot/"><span>4</span><strong>srv2025</strong><i>×</i></a>
+        <a class="new-session" href="/#posts" title="全部文章" aria-label="查看全部文章">+</a>
+      </nav>
+
+      <div class="terminal-screen post-screen">
+        <nav class="command-nav" aria-label="主导航">
+          <span class="prompt">shubo@lab:~/posts$</span>
+          <a href="/">cd ~</a>
+          <a href="/#posts">ls ../posts/</a>
+        </nav>
+
+        <div class="p10k-prompt post-command">
+          <div class="p10k-context"><span class="prompt-rail">╭─</span><span class="prompt-segment host">shubo@lab</span><span class="prompt-segment path">~/posts</span><span class="prompt-ok">✓</span></div>
+          <div class="p10k-command"><span>╰─❯</span><code>cat server-2025-wsl2-boot.md | markdown-preview</code></div>
+        </div>
+
+        <article class="markdown-preview">
+          <header class="post-header">
+            <div class="post-label">POST / 003</div>
+            <h1>启动项被改成 Auto 之后，Server 2025 退回了 Win10</h1>
+            <p class="post-deck">这台 Server 本来是 Codex 桌面版的备用开发机。WSL 只是顺手想兼的 HomeLab，一段开机转发脚本让它在进系统之前就退回了 Win10。</p>
+            <div class="post-meta"><span>2026-09-27</span><span>Shubo</span><span>6 min</span></div>
+          </header>
+
+          <div class="post-content">
+            <p>这台机器的第一职责不是 HomeLab。我要一台环境完整、可以当备用的 Windows：人在别处时，用远程桌面进去跑 Codex 桌面版。系统是 Windows Server 2025 数据中心版，旁边还有一块 Windows 10，16G 内存，1.5T 固态，平时几乎没有负载。</p>
+
+            <p>它有公网地址。远程桌面我不直接放到公网上。3389 的爆破太密，我也没有一套愿意长期维护的安全组。目前低成本、又能嵌进现有工作流的暴露方式只有一种：SSH，并且只允许密钥登录。远程桌面留在内网，或者留在这条 SSH 后面，不单独映射出去。</p>
+
+            <p>WSL 是职责之外的想法。Windows 本身已经能当远程桌面之后，我还想让同一台机器顺便当一点 HomeLab：用系统自带的 WSL2，加一段开机自启和端口转发，跑几个轻量 Linux 服务。本文只记录这次附带尝试停在哪里。Hyper-V 是重装之后准备测的下一次，稳定性和可靠性都还没数，也只针对这个额外的 Linux 角色。</p>
+
+            <div class="post-note">范围就这些：一台要当 Codex 备用桌面的 Windows Server 2025，被附带的 WSL 转发脚本改了 BCD 之后起不来。远程桌面不直接暴露公网。下面没有已验证的搭建步骤。</div>
+
+            <h2>脚本改的是 winload 会读的那一位</h2>
+
+            <p>那段脚本名义上是在配 WSL 的端口转发。它同时还做了两件要到下一次开机才显现的事：把 Server 这条 BCD 项的 <strong>hypervisorlaunchtype</strong> 设成 <strong>Auto</strong>，并打开 VBS，把 Hyper-V 相关组件一起带上。</p>
+
+            <p><strong>hypervisorlaunchtype</strong> 是启动加载器的策略。设成 Auto 之后，选中 Windows Server 2025，<strong>winload.efi</strong> 会先装入 hypervisor，再把内核交进去。WSL2 依赖这个。桌面系统上这么做，通常是多一次重启。这台机器不是。</p>
+
+            <p>它的固件没有完整的 VT-x 开关，硬件虚拟化本身就不齐。选中 Server 之后转一下圈，启动管理器放弃这条项，回到 Windows 10。没有蓝屏，没有错误码，也没有可以打开的日志。</p>
+
+            <p>时间点对得上这种“什么都没有”的现象。hypervisor 由 winload 在 <strong>ntoskrnl</strong> 接管之前拉起。失败发生在这里，内核的 bugcheck 还没开始，转储和事件日志都不会有。双系统再把现场收干净：另一套系统能进，看起来就像 Server 闪了一下，然后自己退回去。</p>
+
+            <h2>后面两晚修的都是更上一层</h2>
+
+            <p>能进的是 Win10。在那边做的四件事，都碰不到这个启动位。</p>
+
+            <p>停掉 <strong>vmms</strong>，清掉虚拟化相关服务。这些服务要等系统起来才存在，而 Server 根本没进到那一步。</p>
+
+            <p>离线挂载 Server 的注册表，关掉 DeviceGuard。VBS 的策略写在注册表里；hypervisor 这次启不启动，写在 BCD 里。关掉前者，后者仍是 Auto。</p>
+
+            <p><strong>bcdedit</strong> 也没改成。枚举里 Server 那条显示为 <strong>{default}</strong>。在 EFI 模式下对这个标识做修改和复制，返回的都是参数错误。当时是从已经启动的 Win10 进去操作的。<strong>{default}</strong> 只是别名，当前系统看到的存储，也未必就是固件里 Server 那条加载项。命令打在别名上，<strong>hypervisorlaunchtype</strong> 还在原地。</p>
+
+            <p>固件侧同样没入口。没有 VT-x 开关，只关 VT-d 改变不了启动早期要不要装 hypervisor。VT-d 管的是设备直通那一类地址转换，不是这条启动策略。</p>
+
+            <p>系统文件和引导都还在。冲突的是一条开机策略和这台机器的虚拟化能力，而当时能用的修复手段都写不回那条策略。</p>
+
+            <h2>重装只说明现在能开机</h2>
+
+            <p>两个通宵之后我停手，重装了纯净的 Windows Server 2025 数据中心版，也不再跑会改 BCD 的 WSL 转发脚本。</p>
+
+            <p>重装换回来的是一个能进的系统。它留下的判断，都还在这次实验的边界里面：</p>
+
+            <p>这类脚本真正危险的动作是改启动项，而且发生在你看不见的地方。端口转发要到系统起来才有意义；启动项在那之前就会爆炸，爆炸点又在日志系统前面。</p>
+
+            <p>桌面 Windows 上 WSL2 失败，机器通常还在，报错还在。Server 和 Win10 双启动时，同一次失败会被启动管理器收成一次静默回退，排查成本全部花在猜。</p>
+
+            <p>WSL2 适合开发时开一下。把它加上开机自启和自动转发，故障域会从 Linux 进程扩大到宿主机的启动项。这次越过的就是这条线。宿主机首先得能进远程桌面、跑 Codex。为了兼一个 HomeLab 去改启动项，主职责先没了。</p>
+
+            <h2>Hyper-V 是下一次实验</h2>
+
+            <p>重装之后，Windows 先回到能进远程桌面、能开 Codex 桌面版。HomeLab 那一层如果还要，准备试的是 Server 自带的 Hyper-V：一块外部虚拟交换机，一台使用局域网地址的 Linux 虚拟机。公网侧仍然只放 SSH，并且只允许密钥登录；远程桌面继续留在 Windows 上，不直接映射出去。这是选型理由，不是运行结果。我还没有它的开机记录，也不知道地址稳不稳定，更不知道宿主机还会不会在启动阶段退回 Win10。</p>
+
+            <p>而且这次故障的根子就是 hypervisor 在启动早期加载失败。装上 Hyper-V 角色之后，<strong>hypervisorlaunchtype</strong> 会再次变成 Auto，走的是同一条路。这台机器如果仍然交不出可用的 VT-x，Hyper-V 会撞上同一面墙。所以这次实验先定四条停机线，做完之前它只是候选：</p>
+
+            <pre>1. 先确认 CPU 和固件把虚拟化交出来，再启用 Hyper-V 角色。
+2. 保留一条 hypervisorlaunchtype=Off 的可启动项。
+3. 确认这条 Off 项还能进系统，再改 Server 那条。
+4. 只记录三件事：外部交换机、一台轻量 Linux 虚拟机、
+   宿主机还会不会在启动阶段退回 Win10。</pre>
+
+            <p>备用开发机要先能开机。WSL2 加自动转发没有通过这次测试，它把 Codex 桌面一起带走了。Hyper-V 还在测试名单上，而且只针对那个附带的 Linux 角色。</p>
+
+            <div class="post-end">
+              <a href="/">cd ~</a>
+              <a href="/#posts">ls ../posts/</a>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <footer class="terminal-footer"><span>server-2025-wsl2-boot.md</span><span>100%</span><span>(END)</span><a href="/">q: quit</a></footer>
+    </main>
+    <script>
+      const active = document.querySelector(".session.active");
+      const strip = active?.parentElement;
+      if (active && strip) {
+        const right = active.offsetLeft + active.offsetWidth;
+        const target = Math.min(active.offsetLeft, Math.max(0, right - strip.clientWidth + 12));
+        strip.scrollTo({ left: target });
+      }
+    </script>
+  </body>
+</html>
