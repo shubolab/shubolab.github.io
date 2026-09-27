@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="一台很少能回家维护的 J1900：Debian 13 无桌面，公网进不了 80 和 443，入口按会不会一起坏来留。" />
+    <meta name="theme-color" content="#080b09" />
+    <title>一年回两次家，所以这台 J1900 不能娇气 — Shubo</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="terminal-window post-window">
+      <header class="termux-header">
+        <div class="termux-brand"><span aria-hidden="true">$_</span><strong>Termux</strong></div>
+        <div class="termux-host">shubo@lab</div>
+        <button class="termux-menu" type="button" aria-label="菜单">⋮</button>
+      </header>
+      <nav class="session-strip" aria-label="终端会话">
+        <a class="session" href="/"><span>1</span><strong>~</strong><i>×</i></a>
+        <a class="session" href="/posts/ssh-alias-codex-routing/"><span>2</span><strong>ssh-alias</strong><i>×</i></a>
+        <a class="session" href="/posts/qq-pet-codex/"><span>3</span><strong>qq-pet</strong><i>×</i></a>
+        <a class="session active" href="/posts/homelab-j1900/"><span>4</span><strong>homelab</strong><i>×</i></a>
+        <a class="session" href="/posts/server-2025-wsl2-boot/"><span>5</span><strong>srv2025</strong><i>×</i></a>
+        <a class="new-session" href="/#posts" title="全部文章" aria-label="查看全部文章">+</a>
+      </nav>
+
+      <div class="terminal-screen post-screen">
+        <nav class="command-nav" aria-label="主导航">
+          <span class="prompt">shubo@lab:~/posts$</span>
+          <a href="/">cd ~</a>
+          <a href="/#posts">ls ../posts/</a>
+        </nav>
+
+        <div class="p10k-prompt post-command">
+          <div class="p10k-context"><span class="prompt-rail">╭─</span><span class="prompt-segment host">shubo@lab</span><span class="prompt-segment path">~/posts</span><span class="prompt-ok">✓</span></div>
+          <div class="p10k-command"><span>╰─❯</span><code>cat homelab-j1900.md | markdown-preview</code></div>
+        </div>
+
+        <article class="markdown-preview">
+          <header class="post-header">
+            <div class="post-label">POST / 003</div>
+            <h1>一年回两次家，所以这台 J1900 不能娇气</h1>
+            <p class="post-deck">家庭宽带有公网，80 和 443 进不来。这台机器的工作只有一件：我不在的时候，它还活着，而且我还能进去。</p>
+            <div class="post-meta"><span>2026-09-27</span><span>Shubo</span><span>4 min</span></div>
+          </header>
+
+          <div class="post-content">
+            <p>人在北京打工，机器在家里。这台 HomeLab 一年大概只有一两次能坐到面前做升级。选它的理由因此很窄：功耗低，已经证明自己能一直开着，性能差就差。</p>
+
+            <p>硬件是一台 J1900 小主机。它以前以黑群晖跑过五六年，现在是 Debian 13 服务器版，没有桌面，这个角色稳定了一年左右。我留下它，是因为它已经证明自己能一直开着。</p>
+
+            <p>宽带有公网地址，80 和 443 这种常见端口用不了。上面没有一个普通网站入口，只有几条坏法不一样的路：</p>
+
+            <pre>ddns           地址变了，名字还在
+ssh            日常进去的那扇门
+frps           别的服务从外面连回来
+cloudflared    不走进不来的 80/443
+tailscale      自己的设备之间
+蒲公英 X1       挂在机器外面的运维兜底</pre>
+
+            <p>前五条都是 Debian 上的进程。蒲公英 X1 外挂在旁边，远程运维不经过这些进程。升级把系统里的服务弄坏时，这一条还在。一年回不了几次家，我买的就是这个差别。</p>
+
+            <p>文档不跟入口放在一起。Debian 上有我自己写的 OneDrive 双向定时同步，按点备份重要文件。硬盘在一台回不去的机器里，文档不能只活在那块盘上。</p>
+
+            <p>重活不放这里。J1900 负责一直开着。需要完整桌面的事，是另一次回家才加的机器。</p>
+
+            <div class="post-end">
+              <a href="/posts/server-2025-wsl2-boot/">cat ../server-2025-wsl2-boot.md</a>
+              <a href="/">cd ~</a>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <footer class="terminal-footer"><span>homelab-j1900.md</span><span>100%</span><span>(END)</span><a href="/">q: quit</a></footer>
+    </main>
+    <script>
+      const active = document.querySelector(".session.active");
+      const strip = active?.parentElement;
+      if (active && strip) {
+        const right = active.offsetLeft + active.offsetWidth;
+        const target = Math.min(active.offsetLeft, Math.max(0, right - strip.clientWidth + 12));
+        strip.scrollTo({ left: target });
+      }
+    </script>
+  </body>
+</html>

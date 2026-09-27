@@ -11,16 +11,16 @@ let bootIsStreaming = false;
 
 const commandNames = [
   'help', 'neofetch', 'whoami', 'pwd', 'ls', 'ls posts', 'cat about.md', 'cat contact.txt',
-  'gh profile', 'open 1', 'open 2', 'open 3', 'clear', 'reset', 'history', 'date', 'sudo'
+  'gh profile', 'open 1', 'open 2', 'open 3', 'open 4', 'clear', 'reset', 'history', 'date', 'sudo'
 ];
 
 const responses = {
-  help: 'help             show commands\nneofetch         show profile\nwhoami           print user\npwd              print working directory\nls posts         list published posts\ncat about.md     show about\ncat contact.txt  show contact\ngh profile       open profile source\nopen 1           open SSH alias post\nopen 2           open QQ pet post\nopen 3           open Server 2025 post\nclear            clear screen\nreset            restore initial screen',
-  neofetch: 'shubo@lab\n--------------------\nProfile:   Shubo\nFocus:     LLM Application Development\nSecurity:  Cybersecurity\nLanguages: Python, Go\nShell:     zsh + Powerlevel10k\nSessions:  4\nPosts:     3\nGitHub:    shubolab',
+  help: 'help             show commands\nneofetch         show profile\nwhoami           print user\npwd              print working directory\nls posts         list published posts\ncat about.md     show about\ncat contact.txt  show contact\ngh profile       open profile source\nopen 1           open SSH alias post\nopen 2           open QQ pet post\nopen 3           open homelab post\nopen 4           open Codex desktop post\nclear            clear screen\nreset            restore initial screen',
+  neofetch: 'shubo@lab\n--------------------\nProfile:   Shubo\nFocus:     LLM Application Development\nSecurity:  Cybersecurity\nLanguages: Python, Go\nShell:     zsh + Powerlevel10k\nSessions:  5\nPosts:     4\nGitHub:    shubolab',
   whoami: 'Shubo — LLM application development / Cybersecurity',
   pwd: '/home/shubo',
   ls: 'about.md  contact.txt  posts/',
-  'ls posts': 'server-2025-wsl2-boot.md\nssh-alias-codex-routing.md\nqq-pet-codex.md',
+  'ls posts': 'homelab-j1900.md\nserver-2025-wsl2-boot.md\nssh-alias-codex-routing.md\nqq-pet-codex.md',
   'cat about.md': '目前主要做 LLM 应用开发和网络安全。\nLanguages: Python, Go',
   'cat contact.txt': 'EMAIL   wsb814183583@gmail.com\nWECHAT  i814183583\nGITHUB  github.com/shubolab',
   history: () => history.map((item, index) => `${String(index + 1).padStart(3)}  ${item}`).join('\n'),
@@ -156,6 +156,10 @@ function runCommand(rawCommand) {
     return;
   }
   if (command === 'open 3') {
+    window.location.href = '/posts/homelab-j1900/';
+    return;
+  }
+  if (command === 'open 4') {
     window.location.href = '/posts/server-2025-wsl2-boot/';
     return;
   }
